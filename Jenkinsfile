@@ -1,14 +1,40 @@
-# install httpd
-yum install httpd -y
+pipeline {
 
-# copy index file into server
-cp index.html /var/www/html/
+    agent any
 
-# give permission
+    stages {
 
-chmod -R 777 /var/www/html/
+        stage('Install Apache') {
+            steps {
+                sh '''
+                sudo yum install httpd -y
+                '''
+            }
+        }
 
+        stage('Copy Index File') {
+            steps {
+                sh '''
+                sudo cp index.html /var/www/html/
+                '''
+            }
+        }
 
-# start httpd
+        stage('Give Permission') {
+            steps {
+                sh '''
+                sudo chmod -R 777 /var/www/html/
+                '''
+            }
+        }
 
-service httpd start
+        stage('Start Apache') {
+            steps {
+                sh '''
+                sudo systemctl start httpd
+                '''
+            }
+        }
+
+    }
+}
